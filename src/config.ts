@@ -12,11 +12,25 @@ dotenv.config();
 export const config = {
   // Etsy API configuration
   etsy: {
+    // API Key (keystring) - Your application's identifier
     apiKey: process.env.ETSY_API_KEY || '',
-    clientId: process.env.ETSY_CLIENT_ID || '',
+    
+    // Client ID - Same as the API Key in Etsy's implementation
+    clientId: process.env.ETSY_API_KEY || '',
+    
+    // Client Secret (shared secret) - Used for OAuth flows
     clientSecret: process.env.ETSY_CLIENT_SECRET || '',
+    
+    // Shop ID - Your Etsy shop identifier
+    shopId: process.env.ETSY_SHOP_ID || '',
+    
+    // Redirect URI for OAuth callback
     redirectUri: process.env.ETSY_REDIRECT_URI || 'http://localhost:3000/callback',
-    scopes: process.env.ETSY_SCOPES || 'listings_r listings_w',
+    
+    // Scopes required for listing operations
+    scopes: process.env.ETSY_SCOPES || 'listings_r listings_w shops_r',
+    
+    // API Base URL
     apiBaseUrl: 'https://openapi.etsy.com/v3'
   },
   
@@ -32,7 +46,6 @@ export const config = {
   isValid(): boolean {
     return !!(
       this.etsy.apiKey &&
-      this.etsy.clientId &&
       this.etsy.clientSecret &&
       this.etsy.redirectUri
     );
