@@ -90,20 +90,36 @@ export class ListingTool {
       }
     );
 
-    // Upload an image to a listing tool
+    // Upload an image to a listing from a file path
     this.server.tool(
-      "uploadListingImage",
+      "uploadListingImageFromPath",
       {
         listingId: z.number().describe("The ID of the listing"),
-        imageData: z.string().describe("Base64 encoded image data")
+        imagePath: z.string().describe("Path to the image file on the server")
       },
-      async ({ listingId, imageData }) => {
+      async ({ listingId, imagePath }) => {
         try {
           const shopId = config.etsy.shopId;
           
           if (!shopId) {
             throw new Error('Shop ID is not set in configuration');
           }
+          
+          // Simple path validation to improve security
+          if (imagePath.includes('..')) {
+            throw new Error('Invalid image path. Path traversal not allowed.');
+          }
+          
+          // Read the image file
+          const fs = require('fs');
+          
+          // Check if file exists
+          if (!fs.existsSync(imagePath)) {
+            throw new Error(`Image file not found at path: ${imagePath}`);
+          }
+          
+          // Read and encode the image
+          const imageData = fs.readFileSync(imagePath, { encoding: 'base64' });
           
           const response = await etsyClient.uploadListingImage(shopId, listingId, imageData);
           
@@ -114,7 +130,7 @@ export class ListingTool {
                 text: JSON.stringify({
                   success: true,
                   listing_image_id: response.listing_image_id,
-                  message: 'Image uploaded successfully'
+                  message: 'Image uploaded successfully from ' + imagePath
                 })
               }
             ]

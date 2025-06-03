@@ -92,8 +92,8 @@ export class EtsyMcpServer {
             description: "Creates a draft listing on Etsy"
           },
           {
-            name: "uploadListingImage",
-            description: "Uploads an image to a listing"
+            name: "uploadListingImageFromPath",
+            description: "Uploads an image to a listing from a file path"
           },
           {
             name: "getTaxonomies",
